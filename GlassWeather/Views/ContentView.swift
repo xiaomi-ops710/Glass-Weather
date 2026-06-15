@@ -2,26 +2,55 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: WeatherViewModel
+    @State private var showFavorites = false
+    @State private var showSettings = false
     @State private var isRefreshing = false
     
     var body: some View {
         ZStack {
             // Dynamic background based on weather
-            BackgroundView(isDaytime: viewModel.isDaytime)
-                .ignoresSafeArea()
+            BackgroundView(
+                isDaytime: viewModel.isDaytime,
+                weatherCondition: viewModel.currentWeather?.condition ?? ""
+            )
+            .ignoresSafeArea()
+            
+            // Weather animations overlay
+            if let weather = viewModel.currentWeather {
+                WeatherAnimationView(condition: weather.condition)
+                    .ignoresSafeArea()
+                    .pointer(.none)
+            }
             
             VStack(spacing: 0) {
                 // Header
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Glass Weather")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.white)
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Glass Weather")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.white)
+                        
+                        Text(viewModel.locationName)
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                     
-                    Text(viewModel.locationName)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.white.opacity(0.7))
+                    Spacer()
+                    
+                    HStack(spacing: 12) {
+                        Button(action: { showFavorites = true }) {
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.white)
+                        }
+                        
+                        Button(action: { showSettings = true }) {
+                            Image(systemName: "gear")
+                                .font(.system(size: 20))
+                                .foregroundColor(.white)
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20)
                 
                 ScrollView {
@@ -38,6 +67,11 @@ struct ContentView: View {
                         // Weather Details
                         if let weather = viewModel.currentWeather {
                             WeatherDetailView(weather: weather)
+                        }
+                        
+                        // 5-Day Forecast
+                        if !viewModel.dailyForecasts.isEmpty {
+                            ForecastView()
                         }
                         
                         // Error message
@@ -62,6 +96,13 @@ struct ContentView: View {
                 
                 Spacer()
             }
+        }
+        .sheet(isPresented: $showFavorites) {
+            FavoriteCitiesView()
+                .environmentObject(viewModel)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .onAppear {
             viewModel.requestLocationPermission()
