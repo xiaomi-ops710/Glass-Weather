@@ -1,12 +1,17 @@
 import Foundation
 
 class WeatherService {
-    private let apiKey = "YOUR_OPENWEATHERMAP_API_KEY"
+    private let apiKey = "YOUR_OPENWEATHERMAP_API_KEY"  // ← ここにAPIキーを入力
     private let baseURL = "https://api.openweathermap.org/data/2.5/weather"
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
     
     func fetchWeather(latitude: Double, longitude: Double) async throws -> Weather {
+        // APIキーが設定されていないかチェック
+        guard apiKey != "YOUR_OPENWEATHERMAP_API_KEY" else {
+            throw WeatherError.invalidAPIKey
+        }
+        
         var components = URLComponents(string: baseURL)
         components?.queryItems = [
             URLQueryItem(name: "lat", value: String(latitude)),
@@ -55,6 +60,7 @@ class WeatherService {
 enum WeatherError: LocalizedError {
     case invalidURL
     case invalidResponse
+    case invalidAPIKey
     case decodingError
     case networkError
     
@@ -64,6 +70,8 @@ enum WeatherError: LocalizedError {
             return "Invalid URL"
         case .invalidResponse:
             return "Invalid response from server"
+        case .invalidAPIKey:
+            return "API key not configured. Please set your OpenWeatherMap API key in WeatherService.swift"
         case .decodingError:
             return "Failed to decode response"
         case .networkError:
