@@ -1,0 +1,43 @@
+# Xcode
+.DS_Store
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.xcworkspace
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.swiftpm/
+*.xcframework
+
+# Xcode cache
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift
+.build/
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+*.playground
+
+# Environment variables
+.env
+.env.local
+*.plist
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+
+# OS
+*.log
+.DS_Store
+Thumbs.db
+
+# App-specific
+Config.swift
+APIKeys.swift
