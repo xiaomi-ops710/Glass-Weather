@@ -1,7 +1,7 @@
 import Foundation
 
 class WeatherService {
-    private let apiKey = "YOUR_OPENWEATHERMAP_API_KEY"  // ← ここにAPIキーを入力
+    private let apiKey = "26d8410c065610aedcf3ec5d9e7b0553"  // ← ここにAPIキーを入力
     private let baseURL = "https://api.openweathermap.org/data/2.5/weather"
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
